@@ -1,0 +1,12 @@
+*.exe
+*.dll
+*.ocx
+*.msi
+*.mdb
+*.hive
+*.part
+*.log
+payload/
+private-runtime/
+runtime-extract-*/
+.env*

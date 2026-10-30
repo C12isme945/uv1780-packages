@@ -1,0 +1,79 @@
+﻿UV-1780 / UVProbe 2.70 原生 Windows 离线安装包
+部署包版本：2.70.2；更新日期：2026-10-30
+
+一、直接安装
+将 UV1780_UVProbe270_Setup.exe 复制到目标电脑，双击运行并允许管理员安装。
+默认“仅预装软件和驱动”，不需要连接仪器，全程可以断网。
+只需要这一个 EXE；不需要旧电脑、F 盘、Python、Git、WSL、Office、Access、
+PowerShell 7、额外开发环境，也不需要事先安装 VC++ 或 .NET 3.5。
+安装会使用 Windows 自带的 Windows PowerShell 5.x、32 位组件注册工具及驱动工具。
+本定制包未签名，Windows 可能显示未知发布者；可用 SHA256.txt 核对完整性。
+
+目标系统：Intel/AMD Windows 10 32/64 位、Windows 11 64 位，桌面完整版。
+不支持 Windows ARM、S 模式、Windows XP/7/8、精简后缺失系统组件的镜像。
+软件本体为 32 位；64 位 Windows 自动使用 32 位运行库和组件注册。
+
+二、这版对全新电脑的改进
+1. 随程序完整安装 VC++ 2005 SP1 x86 的 CRT、MFC、MFCLOC 私有程序集，
+   版本 8.0.50727.6195，与程序内嵌清单匹配。无需系统事先装过岛津软件或 VC++。
+   不再依靠“系统里存在任意 mfc80.dll”来判断运行库是否可用。
+2. 安装前实际激活程序清单并加载 32 位运行库，安装后再次检查原生组件。
+   184 个程序/运行库文件逐个核对哈希，注册 56 个原生组件，并验证 UV178X 注册路径。
+3. 修复缺失的认证组件文件并重新注册；保留已存在的认证数据库及服务器设置。
+4. 不导入旧电脑的打印机名称、WSD 端口、旧路径、测量文件或用户密码。
+5. 自动适配早期 Windows 10 和后续版本的驱动命令；无需接线即可预装 CH341 驱动。
+6. 串口枚举暂不可用时仍可预装软件；驱动要求重启时会明确报告。
+
+三、以后连接仪器
+1. 仪器开机完成初始化，连接 PC 通讯口，并进入 PC Control。
+2. 关闭 UVProbe，运行桌面“UV1780 检测并配置设备”。
+3. 选择实际连接线的串口，核对仪器铭牌编号后保存；本台默认 A11916031761。
+   没有唯一 CH341 接口时不会随便选择其他串口；其他型号转换线可手动选择。
+4. 打开“UVProbe 2.70”，按 F9 连接；实时波长/吸光度刷新后才表示通信成功。
+5. 换 USB 口可能改变 COM 号，届时关闭 UVProbe 后重新运行检测工具。
+安装和检查工具不发送扫描、基线、归零或其他测量指令。
+
+四、验证范围
+本次已验证：包内容校验、配置迁移、用户文件保留、不同 Windows 版本的驱动参数、
+实际 32 位加载检查。148 项运行库及原生组件/认证组件加载通过，已去掉开发工具搜索路径。
+完整私有运行库能加载，缺少 MFC 的测试副本会被拦截；报告记录实际加载路径。
+此前在本机 Windows 11 64 位上验证过 UV-1780 经 COM5 与源软件连接。
+
+尚未完成：本版在全新 Windows 虚拟机的管理员实装、Windows 10/32 位实装、
+普通用户运行验收，以及真实仪器的全部测量流程。
+本机没有可用的 Windows Sandbox，本次不能将“已补齐依赖”称为“干净系统实装通过”。
+附带“启动干净系统验收.cmd”，可在已启用 Windows Sandbox 的电脑上断网自动验收；
+也可将本目录复制到全新 Windows 虚拟机，以管理员运行 Test-CleanWindows.ps1。
+脚本会先拒绝已有 UVProbe 的环境，再验证首次安装、重复修复、组件加载和数据保留，
+结果写入指定报告目录的 clean-windows-result.json。没有通过报告就不算实装验收完成。
+
+五、文件位置和修复
+程序：系统 Program Files (x86)\Shimadzu\UVProbe（32 位 Windows 为 Program Files）。
+程序私有运行库：程序目录中的 Microsoft.VC80.CRT / MFC / MFCLOC。
+数据：系统盘\LabSolutions\UVProbe-Data\DATA。
+方法和报告：系统盘\LabSolutions\UVProbe-Data\METHODS 和 REPORTS。
+运行配置：系统盘\LabSolutions\UVProbe。
+安装日志：系统 ProgramData\UV1780Deployment。
+Preflight-result.json 记录安装前检查；Install-result.json 记录最终安装验收。
+其中 NativeCheck 包含每个原生组件的加载结果；CH341-driver.log 为驱动日志。
+开始菜单“检查程序完整性”也会检查原生依赖，不发送仪器命令。
+
+出错后先关闭 UVProbe，再重新运行安装包修复。已有测量文件和模板会保留。
+此包会覆盖同一程序目录中的软件文件；已启用安全/GLP 管理的安装会拒绝覆盖。
+失败可能已写入部分共享组件或程序，须根据日志修复后再使用。
+不自动启动 UVProbe、不自动连接仪器、不自动重启电脑。
+此迁移包不提供一键卸载，避免移除其他岛津软件使用的共享认证组件或驱动。
+
+六、来源
+软件来自您提供的旧电脑 UVProbe 2.70 中文副本，保留正常登记资料。
+本包为私人迁移包，非岛津官方安装程序；不新增授权，也不绕过授权。
+请在已有授权范围内使用。更换仪器时核对编号与授权，不要公开分发包含登记资料的副本。
+测量方法、仪器校准及正式数据有效性需由实验操作者验收。
+原软件/认证组件：Shimadzu；运行库：Microsoft；驱动：WCH。
+VC++ 原始签名包：https://www.microsoft.com/en-us/download/details.aspx?id=26347
+CH341 3.9.2024.9：https://github.com/WCH-IC/download/releases/download/CH341/CH341SER.ZIP
+安装框架 Inno Setup：https://jrsoftware.org/
+
+七、管理员批量预装
+UV1780_UVProbe270_Setup.exe /VERYSILENT /SUPPRESSMSGBOXES /NORESTART /PREINSTALL=1
+须在管理员环境运行。返回成功表示软件部署与组件检查完成；仪器通信需在 UVProbe 内确认。
